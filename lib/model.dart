@@ -265,3 +265,7 @@ abstract class Crossword implements Built<Crossword, CrosswordBuilder> {
   factory Crossword([void Function(CrosswordBuilder)? updates]) = _$Crossword;
   Crossword._();
 }
+
+/// Construct the serialization/deserialization code for the data model.
+@SerializersFor([Location, Crossword, CrosswordWord, CrosswordCharacter])
+final Serializers serializers = _$serializers;
