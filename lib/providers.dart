@@ -1,8 +1,12 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:built_collection/built_collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'model.dart' as model;
+import 'utils.dart';
 
 part 'providers.g.dart';
 
@@ -54,4 +58,49 @@ class Size extends _$Size {
     _size = size;
     ref.invalidateSelf();
   }
+}
+
+final _random = Random();
+
+@riverpod
+Stream<model.Crossword> crossword(Ref ref) async* {
+  final size = ref.watch(sizeProvider);
+  final wordListAsync = ref.watch(wordListProvider);
+
+  var crossword = model.Crossword.crossword(
+    width: size.width,
+    height: size.height,
+  );
+
+  yield* wordListAsync.when(
+    data: (wordList) async* {
+      while (crossword.characters.length < size.width * size.height * 0.8) {
+        final word = wordList.randomElement();
+        final direction = _random.nextBool()
+            ? model.Direction.across
+            : model.Direction.down;
+        final location = model.Location.at(
+          _random.nextInt(size.width),
+          _random.nextInt(size.height),
+        );
+
+        crossword = crossword.addWord(
+          word: word,
+          direction: direction,
+          location: location,
+        );
+        yield crossword;
+        await Future.delayed(Duration(milliseconds: 100));
+      }
+
+      yield crossword;
+    },
+    error: (error, stackTrace) async* {
+      debugPrint('Error loading word list: $error');
+      yield crossword;
+    },
+    loading: () async* {
+      yield crossword;
+    },
+  );
 }
