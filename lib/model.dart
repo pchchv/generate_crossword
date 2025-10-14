@@ -96,3 +96,45 @@ abstract class CrosswordWord
       _$CrosswordWord;
   CrosswordWord._();
 }
+
+/// A character in a crossword.
+/// This is a single character at a location in a crossword.
+/// It may be part of an across word, a down word, both, but not neither.
+/// The neither constraint is enforced elsewhere.
+abstract class CrosswordCharacter
+    implements Built<CrosswordCharacter, CrosswordCharacterBuilder> {
+  static Serializer<CrosswordCharacter> get serializer =>
+      _$crosswordCharacterSerializer;
+
+  /// The character at this location.
+  String get character;
+  /// The across word that this character is a part of.
+  CrosswordWord? get acrossWord;
+  /// The down word that this character is a part of.
+  CrosswordWord? get downWord;
+
+  /// Constructor for [CrosswordCharacter].
+  /// [acrossWord] and [downWord] are optional.
+  factory CrosswordCharacter.character({
+    required String character,
+    CrosswordWord? acrossWord,
+    CrosswordWord? downWord,
+  }) {
+    return CrosswordCharacter((b) {
+      b.character = character;
+      if (acrossWord != null) {
+        b.acrossWord.replace(acrossWord);
+      }
+      if (downWord != null) {
+        b.downWord.replace(downWord);
+      }
+    });
+  }
+
+  /// Constructor for [CrosswordCharacter].
+  /// Use [CrosswordCharacter.character] instead.
+  factory CrosswordCharacter([
+    void Function(CrosswordCharacterBuilder)? updates,
+  ]) = _$CrosswordCharacter;
+  CrosswordCharacter._();
+}
