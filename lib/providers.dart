@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'model.dart' as model;
 
 part 'providers.g.dart';
 
@@ -25,4 +25,19 @@ Future<BuiltSet<String>> wordList(Ref ref) async {
           ..where((word) => word.length > 2)
           ..where((word) => re.hasMatch(word)),
       );
+}
+
+/// An enumeration for different sizes of [model.Crossword]s.
+enum CrosswordSize {
+  small(width: 20, height: 11),
+  medium(width: 40, height: 22),
+  large(width: 80, height: 44),
+  xlarge(width: 160, height: 88),
+  xxlarge(width: 500, height: 500);
+
+  const CrosswordSize({required this.width, required this.height});
+
+  final int width;
+  final int height;
+  String get label => '$width x $height';
 }
