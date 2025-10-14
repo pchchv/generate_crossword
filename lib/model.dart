@@ -43,3 +43,12 @@ abstract class Location implements Built<Location, LocationBuilder> {
     });
   }
 }
+
+/// The direction of a word in a crossword.
+enum Direction {
+  across,
+  down;
+
+  @override
+  String toString() => name;
+}
