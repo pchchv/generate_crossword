@@ -3,6 +3,8 @@ import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:characters/characters.dart';
 
+part 'model.g.dart';
+
 /// A location in a crossword.
 abstract class Location implements Built<Location, LocationBuilder> {
   static Serializer<Location> get serializer => _$locationSerializer;
