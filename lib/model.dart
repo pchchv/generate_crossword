@@ -52,3 +52,47 @@ enum Direction {
   @override
   String toString() => name;
 }
+
+/// A word in a crossword.
+/// This is a word at a location in a crossword, in either the across or down direction.
+abstract class CrosswordWord
+    implements Built<CrosswordWord, CrosswordWordBuilder> {
+  static Serializer<CrosswordWord> get serializer => _$crosswordWordSerializer;
+
+  /// The word itself.
+  String get word;
+  /// The location of this word in the crossword.
+  Location get location;
+  /// The direction of this word in the crossword.
+  Direction get direction;
+
+  /// Compare two CrosswordWord by coordinates, x then y.
+  static int locationComparator(CrosswordWord a, CrosswordWord b) {
+    final compareRows = a.location.y.compareTo(b.location.y);
+    final compareColumns = a.location.x.compareTo(b.location.x);
+    return switch (compareColumns) {
+      0 => compareRows,
+      _ => compareColumns,
+    };
+  }
+
+  /// Constructor for [CrosswordWord].
+  factory CrosswordWord.word({
+    required String word,
+    required Location location,
+    required Direction direction,
+  }) {
+    return CrosswordWord(
+      (b) => b
+        ..word = word
+        ..direction = direction
+        ..location.replace(location),
+    );
+  }
+
+  /// Constructor for [CrosswordWord].
+  /// Use [CrosswordWord.word] instead.
+  factory CrosswordWord([void Function(CrosswordWordBuilder)? updates]) =
+      _$CrosswordWord;
+  CrosswordWord._();
+}
