@@ -41,3 +41,17 @@ enum CrosswordSize {
   final int height;
   String get label => '$width x $height';
 }
+
+/// A provider that holds the current size of the crossword to generate.
+@Riverpod(keepAlive: true)
+class Size extends _$Size {
+  var _size = CrosswordSize.medium;
+
+  @override
+  CrosswordSize build() => _size;
+
+  void setSize(CrosswordSize size) {
+    _size = size;
+    ref.invalidateSelf();
+  }
+}
