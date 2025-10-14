@@ -138,3 +138,130 @@ abstract class CrosswordCharacter
   ]) = _$CrosswordCharacter;
   CrosswordCharacter._();
 }
+
+/// A crossword puzzle.
+/// This is a grid of characters with words placed in it.
+/// The puzzle constraint is in the English crossword puzzle tradition.
+abstract class Crossword implements Built<Crossword, CrosswordBuilder> {
+  /// Serializes and deserializes the [Crossword] class.
+  static Serializer<Crossword> get serializer => _$crosswordSerializer;
+
+  /// Width across the [Crossword] puzzle.
+  int get width;
+  /// Height down the [Crossword] puzzle.
+  int get height;
+  /// The words in the crossword.
+  BuiltList<CrosswordWord> get words;
+  /// The characters by location. Useful for displaying the crossword.
+  BuiltMap<Location, CrosswordCharacter> get characters;
+
+  /// Add a word to the crossword at the given location and direction.
+  Crossword addWord({
+    required Location location,
+    required String word,
+    required Direction direction,
+  }) {
+    return rebuild(
+      (b) => b
+        ..words.add(
+          CrosswordWord.word(
+            word: word,
+            direction: direction,
+            location: location,
+          ),
+        ),
+    );
+  }
+
+  /// As a finalize step, fill in the characters map.
+  @BuiltValueHook(finalizeBuilder: true)
+  static void _fillCharacters(CrosswordBuilder b) {
+    b.characters.clear();
+
+    for (final word in b.words.build()) {
+      for (final (idx, character) in word.word.characters.indexed) {
+        switch (word.direction) {
+          case Direction.across:
+            b.characters.updateValue(
+              word.location.rightOffset(idx),
+              (b) => b.rebuild((bInner) => bInner.acrossWord.replace(word)),
+              ifAbsent: () => CrosswordCharacter.character(
+                acrossWord: word,
+                character: character,
+              ),
+            );
+          case Direction.down:
+            b.characters.updateValue(
+              word.location.downOffset(idx),
+              (b) => b.rebuild((bInner) => bInner.downWord.replace(word)),
+              ifAbsent: () => CrosswordCharacter.character(
+                downWord: word,
+                character: character,
+              ),
+            );
+        }
+      }
+    }
+  }
+
+  /// Pretty print a crossword. Generates the character grid, and lists
+  /// the down words and across words sorted by location.
+  String prettyPrintCrossword() {
+    final buffer = StringBuffer();
+    final grid = List.generate(
+      height,
+      (_) => List.generate(
+        width,
+        (_) => '░', // https://www.compart.com/en/unicode/U+2591
+      ),
+    );
+
+    for (final MapEntry(key: Location(:x, :y), value: character)
+        in characters.entries) {
+      grid[y][x] = character.character;
+    }
+
+    for (final row in grid) {
+      buffer.writeln(row.join());
+    }
+
+    buffer.writeln();
+    buffer.writeln('Across:');
+    for (final word
+        in words.where((word) => word.direction == Direction.across).toList()
+          ..sort(CrosswordWord.locationComparator)) {
+      buffer.writeln('${word.location.prettyPrint()}: ${word.word}');
+    }
+
+    buffer.writeln();
+    buffer.writeln('Down:');
+    for (final word
+        in words.where((word) => word.direction == Direction.down).toList()
+          ..sort(CrosswordWord.locationComparator)) {
+      buffer.writeln('${word.location.prettyPrint()}: ${word.word}');
+    }
+
+    return buffer.toString();
+  }
+
+  /// Constructor for [Crossword].
+  factory Crossword.crossword({
+    required int width,
+    required int height,
+    Iterable<CrosswordWord>? words,
+  }) {
+    return Crossword((b) {
+      b
+        ..width = width
+        ..height = height;
+      if (words != null) {
+        b.words.addAll(words);
+      }
+    });
+  }
+
+  /// Constructor for [Crossword].
+  /// Use [Crossword.crossword] instead.
+  factory Crossword([void Function(CrosswordBuilder)? updates]) = _$Crossword;
+  Crossword._();
+}
