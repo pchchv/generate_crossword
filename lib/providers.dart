@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'model.dart' as model;
-import 'utils.dart';
+import 'isolates.dart';
 
 part 'providers.g.dart';
 
@@ -59,58 +58,27 @@ class Size extends _$Size {
   }
 }
 
-final _random = Random();
-
 @riverpod
 Stream<model.Crossword> crossword(Ref ref) async* {
   final size = ref.watch(sizeProvider);
   final wordListAsync = ref.watch(wordListProvider);
 
-  var crossword = model.Crossword.crossword(
+  final emptyCrossword = model.Crossword.crossword(        // Edit from here
     width: size.width,
     height: size.height,
   );
 
   yield* wordListAsync.when(
-    data: (wordList) async* {
-      while (crossword.characters.length < size.width * size.height * 0.8) {
-        final word = wordList.randomElement();
-        final direction = _random.nextBool()
-            ? model.Direction.across
-            : model.Direction.down;
-        final location = model.Location.at(
-          _random.nextInt(size.width),
-          _random.nextInt(size.height),
-        );
-        try {
-          var candidate = await compute((
-            (String, model.Direction, model.Location) wordToAdd,
-          ) {
-            final (word, direction, location) = wordToAdd;
-            return crossword.addWord(
-              word: word,
-              direction: direction,
-              location: location,
-            );
-          }, (word, direction, location));
-
-          if (candidate != null) {
-            crossword = candidate;
-            yield crossword;
-          }
-        } catch (e) {
-          debugPrint('Error running isolate: $e');
-        }
-      }
-
-      yield crossword;
-    },
+    data: (wordList) => exploreCrosswordSolutions(
+      crossword: emptyCrossword,
+      wordList: wordList,
+    ),
     error: (error, stackTrace) async* {
       debugPrint('Error loading word list: $error');
-      yield crossword;
+      yield emptyCrossword;
     },
     loading: () async* {
-      yield crossword;
+      yield emptyCrossword;                                // To here.
     },
   );
 }
