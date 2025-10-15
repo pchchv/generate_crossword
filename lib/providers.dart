@@ -63,7 +63,7 @@ Stream<model.Crossword> crossword(Ref ref) async* {
   final size = ref.watch(sizeProvider);
   final wordListAsync = ref.watch(wordListProvider);
 
-  final emptyCrossword = model.Crossword.crossword(        // Edit from here
+  final emptyCrossword = model.Crossword.crossword(
     width: size.width,
     height: size.height,
   );
@@ -78,7 +78,7 @@ Stream<model.Crossword> crossword(Ref ref) async* {
       yield emptyCrossword;
     },
     loading: () async* {
-      yield emptyCrossword;                                // To here.
+      yield emptyCrossword;
     },
   );
 }
