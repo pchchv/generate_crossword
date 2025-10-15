@@ -82,19 +82,24 @@ Stream<model.Crossword> crossword(Ref ref) async* {
           _random.nextInt(size.width),
           _random.nextInt(size.height),
         );
+        try {
+          var candidate = await compute((
+            (String, model.Direction, model.Location) wordToAdd,
+          ) {
+            final (word, direction, location) = wordToAdd;
+            return crossword.addWord(
+              word: word,
+              direction: direction,
+              location: location,
+            );
+          }, (word, direction, location));
 
-        var candidate = crossword.addWord(
-          word: word,
-          direction: direction,
-          location: location,
-        );
-        await Future.delayed(Duration(milliseconds: 10));
-        if (candidate != null) {
-          debugPrint('Added word: $word');
-          crossword = candidate;
-          yield crossword;
-        } else {
-          debugPrint('Failed to add word: $word');
+          if (candidate != null) {
+            crossword = candidate;
+            yield crossword;
+          }
+        } catch (e) {
+          debugPrint('Error running isolate: $e');
         }
       }
 
