@@ -83,13 +83,19 @@ Stream<model.Crossword> crossword(Ref ref) async* {
           _random.nextInt(size.height),
         );
 
-        crossword = crossword.addWord(
+        var candidate = crossword.addWord(
           word: word,
           direction: direction,
           location: location,
         );
-        yield crossword;
-        await Future.delayed(Duration(milliseconds: 100));
+        await Future.delayed(Duration(milliseconds: 10));
+        if (candidate != null) {
+          debugPrint('Added word: $word');
+          crossword = candidate;
+          yield crossword;
+        } else {
+          debugPrint('Failed to add word: $word');
+        }
       }
 
       yield crossword;
