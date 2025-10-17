@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -59,14 +60,21 @@ class Size extends _$Size {
 }
 
 @riverpod
-Stream<model.Crossword> crossword(Ref ref) async* {
+Stream<model.WorkQueue> workQueue(Ref ref) async* {
   final size = ref.watch(sizeProvider);
   final wordListAsync = ref.watch(wordListProvider);
-
   final emptyCrossword = model.Crossword.crossword(
     width: size.width,
     height: size.height,
   );
+  final emptyWorkQueue = model.WorkQueue.from(
+    crossword: emptyCrossword,
+    candidateWords: BuiltSet<String>(),
+    startLocation: model.Location.at(0, 0),
+  );
+
+  ref.read(startTimeProvider.notifier).start();
+  ref.read(endTimeProvider.notifier).clear();
 
   yield* wordListAsync.when(
     data: (wordList) => exploreCrosswordSolutions(
@@ -75,10 +83,12 @@ Stream<model.Crossword> crossword(Ref ref) async* {
     ),
     error: (error, stackTrace) async* {
       debugPrint('Error loading word list: $error');
-      yield emptyCrossword;
+      yield emptyWorkQueue;
     },
     loading: () async* {
-      yield emptyCrossword;
+      yield emptyWorkQueue;
     },
   );
+
+  ref.read(endTimeProvider.notifier).end();
 }
