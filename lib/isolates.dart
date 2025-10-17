@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'model.dart';
 import 'utils.dart';
 
-Stream<Crossword> exploreCrosswordSolutions({
+Stream<WorkQueue> exploreCrosswordSolutions({
   required Crossword crossword,
   required BuiltSet<String> wordList,
 }) async* {
@@ -58,10 +58,10 @@ Stream<Crossword> exploreCrosswordSolutions({
       }, (workQueue, location));
       if (crossword != null) {
         workQueue = workQueue.updateFrom(crossword);
-        yield crossword;
       } else {
         workQueue = workQueue.remove(location);
       }
+      yield workQueue;
     } catch (e) {
       debugPrint('Error running isolate: $e');
     }
