@@ -185,3 +185,33 @@ class DisplayInfo extends _$DisplayInfo {
         loading: () => model.DisplayInfo.empty,
       );
 }
+
+enum BackgroundWorkers {
+  one(1),
+  two(2),
+  four(4),
+  eight(8),
+  sixteen(16),
+  thirtyTwo(32),
+  sixtyFour(64),
+  oneTwentyEight(128);
+
+  const BackgroundWorkers(this.count);
+
+  final int count;
+  String get label => count.toString();
+}
+
+/// A provider that holds the current number of background workers to use.
+@Riverpod(keepAlive: true)
+class WorkerCount extends _$WorkerCount {
+  var _count = BackgroundWorkers.four;
+
+  @override
+  BackgroundWorkers build() => _count;
+
+  void setCount(BackgroundWorkers count) {
+    _count = count;
+    ref.invalidateSelf();
+  }
+}                     
