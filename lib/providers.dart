@@ -13,8 +13,8 @@ part 'providers.g.dart';
 @riverpod
 Future<BuiltSet<String>> wordList(Ref ref) async {
   // This codebase requires that all words consist of lowercase characters in the range 'a'-'z'.
-  //Words containing uppercase letters will be lowercased,
-  //and words containing runes outside this range will be removed.
+  // Words containing uppercase letters will be lowercased,
+  // and words containing runes outside this range will be removed.
 
   final re = RegExp(r'^[a-z]+$');
   final words = await rootBundle.loadString('assets/words.txt');
@@ -110,7 +110,6 @@ class StartTime extends _$StartTime {
 class EndTime extends _$EndTime {
   @override
   DateTime? build() => _end;
-
   DateTime? _end;
 
   void clear() {

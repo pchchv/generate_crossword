@@ -182,8 +182,8 @@ abstract class Crossword implements Built<Crossword, CrosswordBuilder> {
         return false;
       }
 
-      // Characters above and below this character must be related
-      // by a vertical word
+      // Characters above and below this character must
+      // be related by a vertical word.
       if (characters[location.up] case final up?) {
         if (character.downWord == null) {
           return false;
@@ -202,8 +202,8 @@ abstract class Crossword implements Built<Crossword, CrosswordBuilder> {
         }
       }
 
-      // Characters to the left and right of this character must be
-      // related by a horizontal word
+      // Characters to the left and right of this character must
+      // be related by a horizontal word.
       final left = characters[location.left];
       if (left != null) {
         if (character.acrossWord == null) {
@@ -314,8 +314,8 @@ abstract class Crossword implements Built<Crossword, CrosswordBuilder> {
     }
   }
 
-  /// Pretty print a crossword. Generates the character grid,
-  /// and lists the down words and across words sorted by location.
+  /// Pretty print a crossword.
+  /// Generates the character grid, and lists the down words and across words sorted by location.
   String prettyPrintCrossword() {
     final buffer = StringBuffer();
     final grid = List.generate(
