@@ -61,6 +61,7 @@ class Size extends _$Size {
 
 @riverpod
 Stream<model.WorkQueue> workQueue(Ref ref) async* {
+  final workers = ref.watch(workerCountProvider);
   final size = ref.watch(sizeProvider);
   final wordListAsync = ref.watch(wordListProvider);
   final emptyCrossword = model.Crossword.crossword(
@@ -80,6 +81,7 @@ Stream<model.WorkQueue> workQueue(Ref ref) async* {
     data: (wordList) => exploreCrosswordSolutions(
       crossword: emptyCrossword,
       wordList: wordList,
+      maxWorkerCount: workers.count,
     ),
     error: (error, stackTrace) async* {
       debugPrint('Error loading word list: $error');
