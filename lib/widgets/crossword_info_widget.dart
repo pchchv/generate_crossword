@@ -98,7 +98,6 @@ class CrosswordInfoWidget extends ConsumerWidget {
 class _CrosswordInfoRichText extends StatelessWidget {
   final String label;
   final String value;
-
   const _CrosswordInfoRichText({required this.label, required this.value});
 
   @override

@@ -12,10 +12,9 @@ part 'providers.g.dart';
 /// A provider for the wordlist to use when generating the crossword.
 @riverpod
 Future<BuiltSet<String>> wordList(Ref ref) async {
-  // This codebase requires that all words consist of lowercase characters
-  // in the range 'a'-'z'. Words containing uppercase letters will be
-  // lowercased, and words containing runes outside this range will
-  // be removed.
+  // This codebase requires that all words consist of lowercase characters in the range 'a'-'z'.
+  //Words containing uppercase letters will be lowercased,
+  //and words containing runes outside this range will be removed.
 
   final re = RegExp(r'^[a-z]+$');
   final words = await rootBundle.loadString('assets/words.txt');
@@ -99,7 +98,6 @@ Stream<model.WorkQueue> workQueue(Ref ref) async* {
 class StartTime extends _$StartTime {
   @override
   DateTime? build() => _start;
-
   DateTime? _start;
 
   void start() {
@@ -197,7 +195,6 @@ enum BackgroundWorkers {
   oneTwentyEight(128);
 
   const BackgroundWorkers(this.count);
-
   final int count;
   String get label => count.toString();
 }

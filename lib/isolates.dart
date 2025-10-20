@@ -90,7 +90,8 @@ Future<WorkQueue> _generate((WorkQueue, int) workMessage) async {
     return (location, direction, candidateWords.randomElement());
   }
 
-  // Filter down the candidate word list to those that contain the letter at the current location
+  // Filter down the candidate word list to those that
+  // contain the letter at the current location.
   final words = candidateWords.toBuiltList().rebuild(
     (b) => b
       ..where((b) => b.characters.contains(target.character))

@@ -314,8 +314,8 @@ abstract class Crossword implements Built<Crossword, CrosswordBuilder> {
     }
   }
 
-  /// Pretty print a crossword. Generates the character grid, and lists
-  /// the down words and across words sorted by location.
+  /// Pretty print a crossword. Generates the character grid,
+  /// and lists the down words and across words sorted by location.
   String prettyPrintCrossword() {
     final buffer = StringBuffer();
     final grid = List.generate(
@@ -456,8 +456,8 @@ abstract class WorkQueue implements Built<WorkQueue, WorkQueueBuilder> {
       ..badLocations.add(location),
   );
 
-  /// Update the work queue from a crossword derived from the current crossword
-  /// that this work queue is built from.
+  /// Update the work queue from a crossword derived from the
+  /// current crossword that this work queue is built from.
   WorkQueue updateFrom(final Crossword crossword) =>
       WorkQueue.from(
         crossword: crossword,
