@@ -36,7 +36,7 @@ class CrosswordWidget extends ConsumerWidget {
             ),
           );
 
-          final explorationCell = ref.watch(               // Add from here
+          final explorationCell = ref.watch(
             workQueueProvider.select(
               (workQueueAsync) => workQueueAsync.when(
                 data: (workQueue) =>
@@ -45,9 +45,9 @@ class CrosswordWidget extends ConsumerWidget {
                 loading: () => false,
               ),
             ),
-          );                                               // To here.
+          );
 
-          if (character != null) {                         // Modify from here
+          if (character != null) {
             return AnimatedContainer(
               duration: Durations.extralong1,
               curve: Curves.easeInOut,
@@ -65,7 +65,7 @@ class CrosswordWidget extends ConsumerWidget {
                         : Theme.of(context).colorScheme.primary,
                   ),
                   child: Text(character.character),
-                ),                                          // To here.
+                ),
               ),
             );
           }
