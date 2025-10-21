@@ -233,6 +233,7 @@ abstract class Crossword implements Built<Crossword, CrosswordBuilder> {
     required Location location,
     required String word,
     required Direction direction,
+    bool requireOverlap = true,
   }) {
     // Require that the word is not already in the crossword.
     if (words.map((crosswordWord) => crosswordWord.word).contains(word)) {
@@ -261,7 +262,10 @@ abstract class Crossword implements Built<Crossword, CrosswordBuilder> {
         }
       }
     }
-    if (words.isNotEmpty && !overlap) {
+
+    // If overlap is required, make sure that the word overlaps with an existing
+    // word. Skip this test if the crossword is empty.
+    if (words.isNotEmpty && !overlap && requireOverlap) {  // To here.
       return null;
     }
 
