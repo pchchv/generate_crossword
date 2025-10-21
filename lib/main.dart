@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'widgets/crossword_generator_app.dart';
 
 void main() {
   runApp(
@@ -12,7 +11,6 @@ void main() {
           colorSchemeSeed: Colors.blueGrey,
           brightness: Brightness.light,
         ),
-        home: CrosswordGeneratorApp(),
       ),
     ),
   );
